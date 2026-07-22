@@ -1,0 +1,8 @@
+echo
+gorm
+gorm pg driver
+jwt
+go playground validator
+env loader
+// go package to get and serch package
+
