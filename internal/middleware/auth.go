@@ -48,6 +48,13 @@ func AuthMiddleware(jwtService auth.JWTService) echo.MiddlewareFunc {
 				})
 			}
 
+			if claims.TokenType != auth.TokenTypeAccess {
+				return c.JSON(http.StatusUnauthorized, httpresponse.Error{
+					Code:    "UNAUTHORIZED",
+					Message: "Invalid token type, expected access token",
+				})
+			}
+
 			// Store the user id in context for downstream handlers to use
 			c.Set("user_id", claims.UserId)
 

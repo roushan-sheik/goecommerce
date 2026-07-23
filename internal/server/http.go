@@ -26,6 +26,8 @@ func Start(db *gorm.DB, cfg *config.Config) {
 
 	// Middleware
 
+	// e.Use(middleware.AuthMiddleware())
+
 	e.GET("/", func(c *echo.Context) error {
 		return c.JSON(http.StatusOK, map[string]string{
 			"status": "ok",
