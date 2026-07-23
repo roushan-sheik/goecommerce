@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: goecommerce-deployment
+  labels:
+    app: goecommerce
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: goecommerce
+  template:
+    metadata:
+      labels:
+        app: goecommerce
+    spec:
+      containers:
+      - name: goecommerce-container
+        image: my-goecommerce-app:v1
+        imagePullPolicy: Never  # This is very important! It prevents Kubernetes from downloading the image from the internet.
+        ports:
+        - containerPort: 5000
+        
+        # Inject environment variables (Replace with actual secrets in production)
+        env:
+        - name: PORT
+          value: "5000"
+        - name: DSN
+          value: "postgresql://neondb_owner:npg_8eSB0nsVFprc@ep-wandering-glitter-a73ny7sp-pooler.ap-southeast-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+        - name: JWT_SECRET
+          value: "jwt_secret_here"
+          
+        # Resource requests & limits (Best Practice for K8s)
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+            
+        # Probes to ensure the container is healthy
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 5000
+          initialDelaySeconds: 2
+          periodSeconds: 5
